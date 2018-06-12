@@ -1,17 +1,19 @@
-<mat-grid-list cols="4" rowHeight="100px">
-  <mat-grid-tile
-      *ngFor="let tile of tiles"
-      [colspan]="tile.cols"
-      [rowspan]="tile.rows"
-      [style.background]="tile.color">
-    {{tile.text}}
-  </mat-grid-tile>
-</mat-grid-list>
 <div>
-  <ul>
+  <div class="campaignsList">
+      <h2>My Campaigns</h2>
+      <mat-grid-list cols="4" rowHeight="100px" gutterSize="20">
+          <mat-grid-tile
+              *ngFor="let tile of tiles"
+              [colspan]="tile.cols"
+              [rowspan]="tile.rows"
+              [style.background]="tile.color">
+            {{tile.text}}
+          </mat-grid-tile>
+      </mat-grid-list>
+  </div>
+  <ul class="profile">
     <li>Name: {{ name }} {{ lastName }}</li>
     <li>Instagram: {{ instagram }}</li>
     <li>Member Since: {{ memberSince }}</li>
-    <button mat-button>Hi</button>
   </ul>
 </div>
