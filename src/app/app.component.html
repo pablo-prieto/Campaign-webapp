@@ -1,0 +1,10 @@
+<!--The content below is only a placeholder and can be replaced.-->
+
+<button mat-button [matMenuTriggerFor]="menu"><mat-icon svgIcon="menu-icon"></mat-icon></button>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item routerLink="/home" routerLinkActive="active">Home</button>
+  <button mat-menu-item routerLink="/profile" routerLinkActive="active">Profile</button>
+</mat-menu>
+<router-outlet></router-outlet>
+
+
