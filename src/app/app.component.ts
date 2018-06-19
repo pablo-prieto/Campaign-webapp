@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import {MatIconRegistry} from '@angular/material';
+import { MatIconRegistry } from '@angular/material';
+// import { ProfileTabComponent } from './profile-tab/profile-tab.component';
 
 @Component({
   selector: 'app-root',

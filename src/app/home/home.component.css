@@ -1,7 +1,9 @@
 .example-card {
-    max-width: 400px;
-    margin-right: 0;
-  }
+  max-width: 300px;
+  float:left;
+  margin-right:30px;
+  margin-bottom: 20px;
+}
   
   .example-header-image {
     background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
@@ -15,3 +17,7 @@
     font-weight: 600;
     font-family: sans-serif;
   }
+
+/* .homeMain {
+  display: inline-block;
+} */

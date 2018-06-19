@@ -1,13 +1,14 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
-import { MatCardModule, MatMenuModule, MatButtonModule, MatIconModule, MatGridListModule } from '@angular/material';
+import { MatCardModule, MatMenuModule, MatButtonModule, MatIconModule, MatGridListModule, MatDividerModule} from '@angular/material';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
+import { ProfileTabComponent } from './profile-tab/profile-tab.component';
 
 const appRoutes: Routes = [
   // { path: 'crisis-center', component: CrisisListComponent },
@@ -33,7 +34,8 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     ProfileComponent,
-    HomeComponent
+    HomeComponent,
+    ProfileTabComponent
   ],
   imports: [
     BrowserModule,
@@ -44,6 +46,7 @@ const appRoutes: Routes = [
     MatButtonModule,
     MatIconModule,
     MatGridListModule,
+    MatDividerModule,
     RouterModule.forRoot(
       appRoutes,
       { enableTracing: true } // <-- debugging purposes only

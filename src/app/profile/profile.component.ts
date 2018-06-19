@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-profile',
@@ -11,18 +12,36 @@ export class ProfileComponent implements OnInit {
   lastName = '';
   instagram = '';
   memberSince = '';
+  title = 'Profile';
 
   // tiles = [
-  //   {text: 'One', cols: 3, rows: 1, color: 'lightblue', gutterSize: '20'},
-  //   {text: 'Two', cols: 1, rows: 2, color: 'lightgreen'},
-  //   {text: 'Three', cols: 1, rows: 1, color: 'lightpink'},
-  //   {text: 'Four', cols: 2, rows: 1, color: '#DDBDF1'},
+  //   {text: 'Campaign One', cols: 1, rows: 1, color: 'lightblue'},
+  //   {text: 'Campaign Two', cols: 1, rows: 1, color: 'lightgreen'},
+  //   {text: 'Campaign Three', cols: 1, rows: 1, color: 'lightpink'},
+  //   {text: 'Campaign Four', cols: 1, rows: 1, color: '#DDBDF1'},
   // ];
-  tiles = [
-    {text: 'Campaign One', cols: 2, rows: 2, color: 'lightblue'},
-    {text: 'Campaign Two', cols: 2, rows: 2, color: 'lightgreen'},
-    {text: 'Campaign Three', cols: 2, rows: 2, color: 'lightpink'},
-    {text: 'Campaign Four', cols: 2, rows: 2, color: '#DDBDF1'},
+
+  campaigns = [
+    {title: "Campaign 1", companyName: "ABC Company", img: "https://material.angular.io/assets/img/examples/shiba2.jpg", content: 
+      "The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. "
+      + "A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally "
+      + "bred for hunting."},
+    {title: "Campaign 2", companyName: "XYZ Company", img: "https://material.angular.io/assets/img/examples/shiba2.jpg", content: 
+      "The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. "
+      + "A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally "
+      + "bred for hunting."},
+    {title: "Campaign 3", companyName: "CDE Company", img: "https://material.angular.io/assets/img/examples/shiba2.jpg", content: 
+      "The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. "
+      + "A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally "
+      + "bred for hunting."},
+    {title: "Campaign 4", companyName: "NOP Company", img: "https://material.angular.io/assets/img/examples/shiba2.jpg", content: 
+      "The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. "
+      + "A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally "
+      + "bred for hunting."},
+    {title: "Campaign 5", companyName: "NOP Company", img: "https://material.angular.io/assets/img/examples/shiba2.jpg", content: 
+      "The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. "
+      + "A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally "
+      + "bred for hunting."}
   ];
 
   constructor() { }
