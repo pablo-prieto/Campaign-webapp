@@ -1,9 +1,22 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div class="row" style="justify-content: space-between;">
-  <div class="col-md-4" style="float:left;background-color: #FED7B5;border: solid #FED7B5 5px; height:100vh;">
+<!-- <div class="jumbotron">
+  <div class="container">
+      <div class="row">
+          <div class="col-sm-6 offset-sm-3">
+              <alert></alert>
+              <router-outlet></router-outlet>
+          </div>
+      </div>
+  </div>
+</div> -->
+<alert></alert>
+<router-outlet></router-outlet>
+
+<!-- <div class="row" style="justify-content: space-between;">
+  <div class="col-md-4" style="float:left;background-color: #FED7B5;border: solid #FED7B5 5px; height:98vh;">
       <profile-tab-component></profile-tab-component>
   </div>
-  <div class="col-md-8" style="max-height: 90vh; padding-left: 5px;">
+  <div class="col-md-8" style="max-height: 97vh; padding-left: 5px; overflow-y:scroll;">
     <button mat-button [matMenuTriggerFor]="menu"><mat-icon svgIcon="menu-icon"></mat-icon></button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item routerLink="/home" routerLinkActive="active">Home</button>
@@ -11,4 +24,4 @@
     </mat-menu>
     <router-outlet></router-outlet>
   </div>
-</div>
+</div> -->

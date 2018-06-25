@@ -1,14 +1,25 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MatCardModule, MatMenuModule, MatButtonModule, MatIconModule, MatGridListModule, MatDividerModule} from '@angular/material';
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule }    from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { ProfileTabComponent } from './profile-tab/profile-tab.component';
+import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
+import { AlertComponent } from './alert/alert.component';
+
+import { AlertService, AuthenticationService, UserService } from './services/index';
+import { AuthGuard } from './guard/index';
+import { JwtInterceptor } from './helpers';
+
+// used to create fake backend
+import { fakeBackendProvider } from './helpers';
 
 const appRoutes: Routes = [
   // { path: 'crisis-center', component: CrisisListComponent },
@@ -23,11 +34,15 @@ const appRoutes: Routes = [
     component: HomeComponent,
     data: { title: 'Home' }
   },
-  { path: '',
-    redirectTo: '/home',
-    pathMatch: 'full'
-  },
-  // { path: '**', component: PageNotFoundComponent }
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  // { path: '',
+  //   redirectTo: '/home',
+  //   pathMatch: 'full'
+  // },
+  { path: '', component: HomeComponent, canActivate: [AuthGuard] },
+  // otherwise redirect to home
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({
@@ -35,12 +50,16 @@ const appRoutes: Routes = [
     AppComponent,
     ProfileComponent,
     HomeComponent,
-    ProfileTabComponent
+    ProfileTabComponent,
+    LoginComponent,
+    RegisterComponent,
+    AlertComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    ReactiveFormsModule,
     MatCardModule,
     MatMenuModule,
     MatButtonModule,
@@ -52,7 +71,20 @@ const appRoutes: Routes = [
       { enableTracing: true } // <-- debugging purposes only
     )
   ],
-  providers: [],
+  providers: [ 
+    AuthGuard,
+    AlertService,
+    AuthenticationService,
+    UserService,
+    {
+        provide: HTTP_INTERCEPTORS,
+        useClass: JwtInterceptor,
+        multi: true
+    },
+
+    // provider used to create fake backend
+    fakeBackendProvider
+   ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

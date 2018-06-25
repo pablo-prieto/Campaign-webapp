@@ -9,6 +9,7 @@ import { MatCardModule } from '@angular/material/card';
 export class HomeComponent implements OnInit {
 
   title = 'Home Page';
+  tabProfileOpen = false;
   campaigns = [
     {title: "Campaign 1", companyName: "ABC Company", img: "https://material.angular.io/assets/img/examples/shiba2.jpg", content: 
       "The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. "
@@ -31,6 +32,10 @@ export class HomeComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+  }
+
+  toggleProfile() {
+    this.tabProfileOpen = !this.tabProfileOpen;
   }
 
 }
