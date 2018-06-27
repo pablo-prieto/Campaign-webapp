@@ -1,0 +1,16 @@
+# new user
+curl http://localhost:3000/user/create-user -d "{\"usertype\": \"influencer\", \"comp_name\": \"banana\", \"name\": \"banana\", \"borough\":\"Manhattan\", \"state\": \"NY\", \"phone\":\"718-239-4738\", \"email\":\"banana@b.\", \"password\":\"bananahana\"}" -H "Content-Type: application/json"
+
+# login
+curl http://localhost:3000/user/login -d "{\"email\": \"banana@b.\", \"password\": \"bananahana\"}" -H "Content-Type: application/json"
+
+# update
+curl http://localhost:3000/user/update -X PUT -d "{\"actor\": \"admin\", \"user_id\": \"1\", \"key\": \"name\", \"value\": \"Mr.Banana\"}" -H "Content-Type: application/json"
+
+# get user info
+curl http://localhost:3000/user/get-info -d "{\"actor\": \"admin\", \"user_id\": \"1\", \"key\": \"name\"}"  -H "Content-Type: application/json"
+or
+curl http://localhost:3000/user/get-info -d "{\"actor\": \"admin\", \"user_id\": \"1\", \"key\": \"all\"}"  -H "Content-Type: application/json"
+
+# delete
+curl http://localhost:3000/user/remove -d "{\"actor\": \"admin\", \"user_id\": \"1\"}" -H "Content-Type: application/json"
