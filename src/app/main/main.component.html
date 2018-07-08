@@ -1,0 +1,38 @@
+<div class="row" style="background-color: #FED7B5;">
+  <div class="col-sm-2 col-md-2">
+    <button mat-button>logo</button>
+  </div>
+  <div class="col-sm-2 col-md-2">
+    <button mat-button (click)="toggleTab('profile')">Profile</button>
+  </div>
+  <div class="col-sm-2 col-md-2">
+    <button mat-button (click)="toggleTab('notifications')">Notifications</button>
+  </div>
+  <div class="col-sm-2 col-md-2">
+    <button mat-button>settings</button>
+  </div>
+  <div class="col-sm-2 col-md-2">
+    <button mat-button>recommended</button>
+  </div>
+  <div class="col-sm-2 col-md-2">
+    <button mat-button>favorites</button>
+  </div>  
+</div>
+
+<div class="row" *ngIf="tabOpen else standard">
+  <div class="col-md-3" style="background-color: #FED7B5;border: solid #FED7B5 5px; height:94vh; padding-bottom: 15px;">
+    <div [ngSwitch]="openValue">
+      <profile-tab-component *ngSwitchCase="'profile'"></profile-tab-component>
+      <notifications *ngSwitchCase="'notifications'"></notifications>
+      <!-- <app-unknown-hero  *ngSwitchDefault           [hero]="currentHero"></app-unknown-hero> -->
+    </div>
+  </div>
+  <div class="col-md-9" style="max-height: 94vh; padding-left: 5px; overflow-y:scroll; padding-bottom: 15px;">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
+<ng-template #standard>
+  <router-outlet></router-outlet>
+</ng-template>
+

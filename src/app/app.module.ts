@@ -20,27 +20,44 @@ import { JwtInterceptor } from './helpers';
 
 // used to create fake backend
 import { fakeBackendProvider } from './helpers';
+import { CampaignDetailsComponent } from './campaign-details/campaign-details.component';
+import { MainComponent } from './main/main.component';
+import { NotificationsComponent } from './notifications/notifications.component';
 
 const appRoutes: Routes = [
   // { path: 'crisis-center', component: CrisisListComponent },
   // { path: 'hero/:id',      component: HeroDetailComponent },
   {
+    path: 'main',
+    component: MainComponent,
+    data: { title: 'Main' },
+    children: [
+      {path: 'home', component: HomeComponent},
+      {path: 'campaignDetails/:id', component: CampaignDetailsComponent}
+    ]
+  },
+  // {
+  //   path: 'home',
+  //   component: HomeComponent,
+  //   data: { title: 'Home' }
+  // },
+  {
     path: 'profile',
     component: ProfileComponent,
     data: { title: 'Profile' }
   },
-  {
-    path: 'home',
-    component: HomeComponent,
-    data: { title: 'Home' }
-  },
+  // {
+  //   path: 'campaignDetails/:id',
+  //   component: CampaignDetailsComponent,
+  //   data: { title: 'Campaign Details' }
+  // },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   // { path: '',
   //   redirectTo: '/home',
   //   pathMatch: 'full'
   // },
-  { path: '', component: HomeComponent, canActivate: [AuthGuard] },
+  { path: '', component: MainComponent, canActivate: [AuthGuard] },
   // otherwise redirect to home
   { path: '**', redirectTo: '' }
 ];
@@ -53,7 +70,10 @@ const appRoutes: Routes = [
     ProfileTabComponent,
     LoginComponent,
     RegisterComponent,
-    AlertComponent
+    AlertComponent,
+    CampaignDetailsComponent,
+    MainComponent,
+    NotificationsComponent
   ],
   imports: [
     BrowserModule,

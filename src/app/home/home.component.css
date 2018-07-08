@@ -5,19 +5,22 @@
   margin-bottom: 20px;
 }
   
-  .example-header-image {
-    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
-    background-size: cover;
-  }
+.example-header-image {
+  background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+  background-size: cover;
+}
 
-  .actions {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-    font-family: sans-serif;
-  }
+.actions {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: sans-serif;
+}
 
+img {
+  cursor: pointer;
+}
 /* .homeMain {
   display: inline-block;
 } */

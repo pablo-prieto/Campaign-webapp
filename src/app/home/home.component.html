@@ -1,4 +1,4 @@
-<div class="row" style="background-color: #FED7B5;">
+<!-- <div class="row" style="background-color: #FED7B5;">
   <div class="col-sm-2 col-md-2">
     <button mat-button>logo</button>
   </div>
@@ -17,9 +17,9 @@
   <div class="col-sm-2 col-md-2">
     <button mat-button>favorites</button>
   </div>  
-</div>
+</div> -->
 
-<div class="row" *ngIf="tabProfileOpen else standard">
+<!-- <div class="row" *ngIf="tabProfileOpen else standard">
   <div class="col-md-3" style="background-color: #FED7B5;border: solid #FED7B5 5px; height:94vh; padding-bottom: 15px;">
     <profile-tab-component></profile-tab-component>
   </div>
@@ -32,27 +32,27 @@
       <div class="row between-lg" style="margin-left: 20px">
           <div *ngFor="let campaign of campaigns" class="col-sm-12 col-md-6 col-lg-4">
             <mat-card class="example-card">
-                <mat-card-header>
-                  <div mat-card-avatar class="example-header-image"></div>
-                  <mat-card-title>{{campaign.title}}</mat-card-title>
-                  <mat-card-subtitle>{{campaign.companyName}}</mat-card-subtitle>
-                </mat-card-header>
-                <img mat-card-image src={{campaign.img}} alt="Photo of a Shiba Inu">
-                <mat-card-content>
-                  <p>{{campaign.content}}</p>
-                </mat-card-content>
-                <mat-card-actions>
-                  <button mat-button class="actions">LIKE</button>
-                  <button mat-button class="actions">SHARE</button>
-                </mat-card-actions>
-              </mat-card>
+              <mat-card-header>
+                <div mat-card-avatar class="example-header-image"></div>
+                <mat-card-title>{{campaign.title}}</mat-card-title>
+                <mat-card-subtitle>{{campaign.companyName}}</mat-card-subtitle>
+              </mat-card-header>
+              <img (click)="openCampaign(campaign.id)" mat-card-image src={{campaign.img}} alt="Photo of a Shiba Inu">
+              <mat-card-content>
+                <p>{{campaign.content}}</p>
+              </mat-card-content>
+              <mat-card-actions>
+                <button mat-button class="actions">LIKE</button>
+                <button mat-button class="actions">SHARE</button>
+              </mat-card-actions>
+            </mat-card>
           </div>
       </div>
   </div>
-</div>
+</div> -->
 
-<ng-template #standard>
-  <div >
+<!-- <ng-template #standard> -->
+  <!-- <div > -->
     <div style="text-align:center">
         <h1>
           Welcome to your {{ title }}!
@@ -66,7 +66,7 @@
                 <mat-card-title>{{campaign.title}}</mat-card-title>
                 <mat-card-subtitle>{{campaign.companyName}}</mat-card-subtitle>
               </mat-card-header>
-              <img mat-card-image src={{campaign.img}} alt="Photo of a Shiba Inu">
+              <img (click)="openCampaign(campaign.id)" mat-card-image src={{campaign.img}} alt="Photo of a Shiba Inu">
               <mat-card-content>
                 <p>{{campaign.content}}</p>
               </mat-card-content>
@@ -77,5 +77,5 @@
             </mat-card>
         </div>
       </div>
-    </div>
-</ng-template>
+    <!-- </div> -->
+<!-- </ng-template> -->
