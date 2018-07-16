@@ -17,6 +17,10 @@ export class MainComponent implements OnInit {
     this.router.navigate(['/main/home']);
   }
 
+  home() {
+    this.router.navigate(['/main/home']);
+  }
+
   toggleTab(id) {
     // If click on first time, open the given id
     // If click on second time, depends on whether it is the same or another id to open the tab.
