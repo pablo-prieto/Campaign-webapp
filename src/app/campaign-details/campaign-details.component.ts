@@ -13,6 +13,7 @@ export class CampaignDetailsComponent implements OnInit {
   campaign: Campaign;
   id: string;
   private sub: any;
+  img: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -29,6 +30,7 @@ export class CampaignDetailsComponent implements OnInit {
 
       // In a real app: dispatch action to load the details here.
     });
+    this.img = "https://material.angular.io/assets/img/examples/shiba2.jpg";
   }
 
 }

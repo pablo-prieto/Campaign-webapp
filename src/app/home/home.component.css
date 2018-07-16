@@ -3,6 +3,7 @@
   float:left;
   margin-right:30px;
   margin-bottom: 20px;
+  box-sizing: unset;
 }
   
 .example-header-image {
