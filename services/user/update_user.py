@@ -60,23 +60,18 @@ def other_option(cur, table, user_id, key, value):
 	db.update_tb(cur, table, "user_id", user_id, key, gc.quote(value))
 	return ""
 
-def update_user(usertype, user_id, key, value):
+def update_user(user_id, key, value):
 	"""
 	Will update user
 	args: usertype (string), user_id (int), key (string), value (any)
 	returns: dictionary
 	"""
-	remote = False
-	con, cur = gc.setup_db(remote)
-	
-	# check related tables exist
-	if not gc.check_tb_relations(cur, usertype):
-		return gc.results(con, cur, "0", "Necessary tables have not yet been created")
+	con, cur = gc.setup_db()
 		
 	# find out table which table we want
-	table = gc.find_table(usertype, key)
+	table = gc.find_table(cur, "user", user_id, key)
 	if not table:
-		return gc.results(con, cur, "0", "no such usertype and key combination")
+		return gc.results(con, cur, "0", "no such key")
 		
 	if key == 'email' or key == 'phone':
 		message = username_option(cur, table, user_id, key, value)
@@ -98,14 +93,12 @@ def approve_user(user_id, status):
 	args: user_id (int)
 	returns: dictionary
 	"""
-	remote = False
-	con, cur = gc.setup_db(remote)
+	con, cur = gc.setup_db()
 	
 	# check related tables exist
-	if not gc.check_tb_relations(cur, "user"):
-		return gc.results(con, cur, "0", "Necessary tables have not yet been created")
-	db.del_row(cur, "approval_queue", "queued_id", int(user_id))
-	db.update_tb(cur, "user_cred", "user_id", user_id, "status", gc.quote(status))
+	
+	db.del_row(cur, "user_queue", "user_id", int(user_id))
+	db.update_tb(cur, "credentials", "user_id", user_id, "status", gc.quote(status))
 	return gc.results(con, cur, "1")
 	
-# print(update("user", "1", "name", "Mr.banana"))
+# print(update_user("4", "usertype", "business"))

@@ -5,7 +5,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import base_cmd.db_commands as db
 import base_cmd.generic_commands as gc
 
-
 def check_username_pass(cur, table, email, phone, password):
 	for char in email:
 		email = email.lower()
@@ -23,29 +22,29 @@ def check_username_pass(cur, table, email, phone, password):
 		return "Password must be between 8 and 16"
 
 
-def send_user_db(cur, status, usertype, comp_name, name, borough, state, phone, email, password, salt, reg_date):
+def send_user_db(cur, table, status, usertype, first_name, last_name, borough, state, phone, email, password, salt, create_date):
 	"""
 	Will create an account in the database
 	args: all strings
 	returns: none
 	"""
-	db.insert_tb(cur, "user_cred", status=gc.quote(status), usertype=gc.quote(usertype),
-		comp_name=gc.quote(comp_name), name=gc.quote(name), borough=gc.quote(borough), state=gc.quote(state),
-		phone=gc.quote(phone), email = gc.quote(email), password = gc.quote(password), salt = gc.quote(salt),
-		reg_date=gc.quote(reg_date))
+	db.insert_tb(cur, table, status=gc.quote(status), usertype=gc.quote(usertype), 
+		first_name=gc.quote(first_name), last_name=gc.quote(last_name), borough=gc.quote(borough), state=gc.quote(state), 
+		phone=gc.quote(phone), email = gc.quote(email),  password = gc.quote(password), salt = gc.quote(salt), 
+		create_date = gc.quote(create_date))
 		
-def insert_other_tb(cur, user_id):
+def insert_other_tb(cur, user_id, create_date):
 	"""
 	Will create other relative tables from user
 	args: cur (address), user_id (int)
 	returns: none
 	"""
-	db.insert_tb(cur, "profiles", user_id = user_id, picture_id = "", about = "")
+	db.insert_tb(cur, "profiles", user_id = user_id, pic_url = "", active_tag_id = 0, about = "")
 	db.insert_tb(cur, "configs", user_id = user_id)
 	# will send a request of approval to admin
-	db.insert_tb(cur, "approval_queue", queued_id = user_id)
-		
-def setup_user(cur, usertype, comp_name, name, borough, state, phone, email, password):
+	db.insert_tb(cur, "user_queue", user_id = user_id, create_date = gc.quote(create_date))
+	
+def setup_user(cur, table, usertype, first_name, last_name, borough, state, phone, email, password):
 	"""
 	Will setup appropriate information of the user
 	args: all strings
@@ -53,77 +52,32 @@ def setup_user(cur, usertype, comp_name, name, borough, state, phone, email, pas
 	"""
 	status = "inactive"
 	password, salt = gc.hash_pass(password)
-	reg_date = datetime.datetime.today().strftime('%Y-%m-%d')
-	send_user_db(cur, status, usertype, comp_name, name, borough, state, phone, email, password, salt, reg_date)
+	create_date = datetime.datetime.today().strftime('%Y-%m-%d')
+	send_user_db(cur, table, status, usertype, first_name, last_name, borough, state, phone, email, password, salt, create_date)
 	
-	sql = "SELECT user_id FROM user_cred WHERE email = '%s' and comp_name = '%s'" % (email, comp_name)
-	cur.execute(sql)
-	user_id = cur.fetchone()[0]
+	user_id = db.get_item(cur, table, 'email', gc.quote(email), 'user_id')
 	
-	insert_other_tb(cur, user_id)
+	if usertype != 'admin':
+		insert_other_tb(cur, user_id, create_date)
 
-def create_user(usertype, comp_name, name, borough, state, phone, email, password):
+	
+def create_user(usertype, first_name, last_name, borough, state, phone, email, password):
 	"""
 	The main function for user creation.
 	args: all strings
 	returns: results (dictionary)
 	"""
-	remote = False
-	con, cur, valid_tables = gc.general_setup(remote, usertype)
+	con, cur = gc.setup_db()
+	table = 'credentials'
 	
-	# check if table exists
-	if not valid_tables:
-		return gc.results(con, cur, "0", "Table has not yet been created")
-	
-	message = check_username_pass(cur, "user_cred", email, phone, password)
+	message = check_username_pass(cur, table, email, phone, password)
 	if message:
 		return gc.results(con, cur, "0", message)
 		
-	setup_user(cur, usertype, comp_name, name, borough, state, phone, email, password)
-	return gc.results(con, cur, "1")	
-##########################################################################
-
-
-def send_admin_db(cur, usertype, name, phone, email, password, salt, reg_date):
-	"""
-	Will create an account in the database
-	args: all strings
-	returns: none
-	"""
-	db.insert_tb(cur, "admin_cred", usertype=gc.quote(usertype), name=gc.quote(name), phone=gc.quote(phone),
-		email = gc.quote(email), password = gc.quote(password), salt = gc.quote(salt), reg_date=gc.quote(reg_date))
-	
-def setup_admin(cur, name, phone, email, password):
-	"""
-	Will setup appropriate information of the admin.
-	args: all strings
-	returns: none
-	"""
-	password, salt = gc.hash_pass(password)
-	reg_date = datetime.datetime.today().strftime('%Y-%m-%d')
-	send_admin_db(cur, "admin", name, phone, email, password, salt, reg_date)
-
-def create_admin(usertype, name, phone, email, password):
-	"""
-	The main function for admin creation.
-	args: all strings
-	returns: results (dictionary)
-	"""
-	remote = False
-	con, cur, valid_tables = gc.general_setup(remote, usertype)
-	
-	# check if table exists
-	if not valid_tables:
-		return gc.results(con, cur, "0", "Table has not yet been created")
-
-	message = check_username_pass(cur, "admin_cred", email, phone, password)
-	if message:
-		return gc.results(con, cur, "0", message)
-	
-	setup_admin(cur, name, phone, email, password)
+	setup_user(cur, table, usertype, first_name, last_name, borough, state, phone, email, password)
 	return gc.results(con, cur, "1")
 
 	
 	
-# print(create_user("influencer", "banana", "banana", "Manhattan", "NY", "718-239-4738", "banana@b.", "bananahana"))
-#print(create_admin("banana", "718-239-4738", "banana@b.", "bananahana"))
+#print(create_user("influencer", "banana", "banana", "Manhattan", "NY", "718-239-4738", "banana@b.", "bananahana"))
+#print(create_user("admin", "banana", "banana", "Manhattan", "NY", "711-239-4738", "apple@a.", "bananahana"))

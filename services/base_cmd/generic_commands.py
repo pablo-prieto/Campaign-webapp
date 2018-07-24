@@ -1,18 +1,18 @@
 import hashlib, uuid
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import base_cmd.db_commands as db
 
-def setup_db(remote):
+def setup_db():
 	"""
 	This function will connect to the database and setup the table features and will also clear any old data.
 	args: none
 	returns: con (address), cur (address)
 	"""
-	print("Connecting to database...")
+	print('Connecting to database...')
 	# function from db_commands to connect to database
-	con, cur = db.connect(remote)
+	con, cur = db.connect()
 	return con, cur
 
 def close_db(con, cur):
@@ -24,16 +24,16 @@ def close_db(con, cur):
 	db.end(con, cur)
 
 def get_all_tb(field):
-	if field == "influencer":
-		return ["user_cred", "profiles", "configs", "user_tags", "user_favorites", "affiliated_campaigns", "user_titles"]
-	elif field == "business":
-		return ["user_cred", "profiles", "configs", "user_tags", "campaigns", "images", "user_titles"]
-	elif field == "admin":
-		return ["admin_cred", "approval_queue"]
-	elif field == "topics":
-		return ["tags", "titles"]
-	elif field == "campaigns":
-		return ["campaigns", "images"]
+	if field == 'influencer':
+		return ['credentials', 'profiles', 'configs', 'user_tags', 'user_titles', 'influencer_platforms', 'user_favorites', 'affiliated_campaigns']
+	elif field == 'business':
+		return ['credentials', 'profiles', 'configs', 'user_tags', 'user_titles', 'businesses', 'campaigns', 'images', 'approval_queue']
+	elif field == 'admin':
+		return ['credentials', 'user_queue']
+	elif field == 'topics':
+		return ['tags', 'titles', 'styles', 'platforms']
+	elif field == 'campaigns':
+		return ['campaigns', 'images', 'campaign_tags', 'approval_queue']
 	else:
 		return []
 	
@@ -43,29 +43,29 @@ def check_tb_relations(cur, usertype):
 	args: cur (address), usertype (string)
 	returns: boolean
 	"""
-	if usertype == "admin":
-		return db.exist_tb(cur, "admin_cred")
-	elif usertype == "user":
-		return (db.exist_tb(cur, "user_cred") and db.exist_tb(cur, "approval_queue")
-			and db.exist_tb(cur, "profiles") and db.exist_tb(cur, "configs"))
-	elif usertype == "business":
-		return (db.exist_tb(cur, "user_cred") and db.exist_tb(cur, "profiles")
-			and db.exist_tb(cur, "configs")
-			and db.exist_tb(cur, "campaigns") and db.exist_tb(cur, "images"))
-	elif usertype == "influencer":
-		return (db.exist_tb(cur, "user_cred") and db.exist_tb(cur, "profiles")
-			and db.exist_tb(cur, "configs")
-			and db.exist_tb(cur, "affiliated_campaigns") and db.exist_tb(cur, "user_favorites"))
+	if usertype == 'admin':
+		return db.exist_tb(cur, 'credentials')
+	elif usertype == 'user':
+		return (db.exist_tb(cur, 'credentials') and db.exist_tb(cur, 'user_queue')
+			and db.exist_tb(cur, 'profiles') and db.exist_tb(cur, 'configs'))
+	elif usertype == 'business':
+		return (db.exist_tb(cur, 'credentials') and db.exist_tb(cur, 'profiles')
+			and db.exist_tb(cur, 'configs')
+			and db.exist_tb(cur, 'campaigns') and db.exist_tb(cur, 'images'))
+	elif usertype == 'influencer':
+		return (db.exist_tb(cur, 'credentials') and db.exist_tb(cur, 'profiles')
+			and db.exist_tb(cur, 'configs')
+			and db.exist_tb(cur, 'affiliated_campaigns') and db.exist_tb(cur, 'user_favorites'))
 	else:
 		return False
 	
-def general_setup(remote, usertype):
+def general_setup(usertype):
 	"""
 	Will connect to the database and check if the relative table exists
-	args: remote (boolean), usertype (string)
+	args: usertype (string)
 	returns: con (address), cur (address), boolean
 	"""
-	con, cur = setup_db(remote)
+	con, cur = setup_db()
 	return con, cur, check_tb_relations(cur, usertype)
 	
 def quote(string):
@@ -82,46 +82,52 @@ def quote(string):
 		i += 1
 	return "'{}'".format(string)
 ##################################################################################################
-	
-def find_table(usertype, key):
+def get_usertype(cur, user_id):
+	return db.get_item(cur, 'credentials', 'user_id', user_id, 'usertype')
+
+def find_table(cur, topic, user_id, key):
 	"""
 	Finds the table correspoding to the usertype (user, admin) and key (attribute)
-	args: usertype(string), key (string)
+	args: cur, topic, user_id, key
 	returns: table (string)
 	"""
-	if usertype == "admin":
-		table = "admin_cred"
-	elif usertype == "business":
-		if key in ("status", "usertype", "comp_name", "name", "borough", "state", "phone", "email", "password", "reg_date"):
-			table = "user_cred"
-		elif key in ("picture_id", "about"):
-			table = "profiles"
-		elif key in ("tags"):
-			table = "user_tags"
-		elif key in ("campaigns"):
-			table = "campaigns"
-		elif key in ("images"):
-			table = "images"	
-		else:
-			table = None
-	elif usertype == "influencer":
-		if key in ("status", "usertype", "comp_name", "name", "borough", "state", "phone", "email", "password", "reg_date"):
-			table = "user_cred"
-		elif key in ("picture_id", "about"):
-			table = "profiles"
-		elif key in ("tags"):
-			table = "user_tags"
-		elif key in ("affil_id"):
-			table = "affiliated_campaigns"
-		elif key in ("favorites"):
-			table = "user_favorites"
+	usertype = get_usertype(cur, user_id)
+	if topic == 'user':
+		if usertype == 'admin':
+			table = 'credentials'
+		elif usertype == 'business' or 'influencer':
+			if key in ('status', 'usertype', 'first_name', 'last_name', 'borough', 'state', 'phone', 'email', 'password'):
+				table = 'credentials'
+			elif key in ('pic_url', 'active_tag_id', 'about'):
+				table = 'profiles'
+			elif key in ('tags'):
+				table = 'user_tags'
+			elif key in ('title_id'):
+				table = 'user_titles'
+			else:
+				table = None
+	elif topic == 'professions':
+		if usertype == 'business':
+			if key in ('campaigns'):
+				table = 'campaigns'
+			elif key in ('images'):
+				table = 'images'	
+			else:
+				table = None
+		elif usertype == 'influencer':
+			if key in ('affil_id'):
+				table = 'affiliated_campaigns'
+			elif key in ('favorites'):
+				table = 'user_favorites'
+			else:
+				table = None
 		else:
 			table = None
 	else:
 		table = None
 	return table
 	
-def results(con, cur, success, reason = ""):
+def results(con, cur, success, reason = ''):
 	"""
 	Will print a generic result in json format
 	args: con (address), cur (address), success (string), reason (string)
@@ -129,14 +135,13 @@ def results(con, cur, success, reason = ""):
 	"""
 	close_db(con, cur)
 	print('rebuild finished successfully.')
-	return {"success": success, "reason":reason}
+	return {'success': success, 'reason':reason}
 	
-def val_results(con, cur, success, val, usertype, reason = ""):
+def val_results(con, cur, success, val, usertype, reason = ''):
 	close_db(con, cur)
 	print('rebuild finished successfully.')
-	return {"success": success, "value": val, "usertype": usertype, "reason":reason}
+	return {'success': success, 'value': val, 'usertype': usertype, 'reason':reason}
 ###############################################################################################################	
-	
 	
 def hash_pass(password):
 	"""

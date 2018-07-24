@@ -1,10 +1,10 @@
 # DESCRIPTION: This is like support functions for SQL commands
 # Author: Eun Il Kim
 
-import psycopg2
-import decimal
 import sys
 import os
+import psycopg2
+import decimal
 
 # This contains the login for the database, make your own...
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
@@ -15,7 +15,7 @@ import aws_config.info as info
 ###############################################################################################################################
 # GENERIC FUNCTIONS
 
-def connect(remote = True):
+def connect(remote = False):
 	"""
 	connects to the database
 	args: remote (boolean)
@@ -147,7 +147,7 @@ def exist_items(cur, table_name, **kwargs):
 
 def get_item(cur, table_name, id_name, id, *args):
 	"""
-	This is a generic function that will check if the input is not duplicate
+	This is a generic function will return the items given a condition
 	args: cur (address), table_name (string),
 		**kwargs contain kwargs[name] = type (dictionary)
 	returns: true or false
@@ -172,7 +172,7 @@ def get_item(cur, table_name, id_name, id, *args):
 	
 def distinct_items(cur, table_name, key, id_name = None, id = None):
 	"""
-	This is a generic function that will check if the input is not duplicate
+	This is a generic function that will return disctinct list of items
 	args: cur (address), table_name (string),
 		**kwargs contain kwargs[name] = type (dictionary)
 	returns: true or false

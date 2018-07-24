@@ -37,26 +37,20 @@ def flask_creation():
 # test_run: Make sure you remove next lines delimiters
 """ 
 curl http://localhost:3000/user/create-user -d "{\"usertype\": \"influencer\", 
-"\"comp_name\": \"banana\", "\"name\": \"banana\", \"borough\":\"Manhattan\", \"state\": \"NY\", 
+"\"first_name\": \"banana\", "\"last_name\": \"banana\", \"borough\":\"Manhattan\", \"state\": \"NY\", 
 "\"phone\":\"718-239-4738\", \"email\":\"banana@b.\", \"password\":\"bananahana\"}" -H "Content-Type: application/json"
 """
+
 @app.route('/user/create-user', methods=['POST'])
 def create_new_user():
 	"""
 	This function creates a new user
 	"""
 	input = request.get_json()
-	return (jsonify(create_user.create_user(input["usertype"], input["comp_name"], input["name"],
+	return (jsonify(create_user.create_user(input["usertype"], input["first_name"], input["last_name"],
 		input["borough"], input["state"], input["phone"], input["email"], input["password"])), 200)
 		
-@app.route('/user/create-admin', methods=['POST'])
-def create_new_admin():
-	"""
-	This function creates a new user
-	"""
-	input = request.get_json()
-	return (jsonify(create_user.create_admin(input["usertype"], input["name"], input["phone"], input["email"], input["password"])), 200)
-		
+# test_run: curl http://localhost:3000/user/update -X PUT -d "{\"user_id\": \"1\", \"status\": \"active\"}" -H "Content-Type: application/json"
 @app.route('/user/approve-user', methods=['PUT'])
 def approve():
 	"""
@@ -74,45 +68,51 @@ def login():
 	input = request.get_json()
 	return (jsonify(get_user_info.login(input["username"], input["password"])), 200)
 
-# test_run: curl http://localhost:3000/user/update -X PUT -d "{\"usertype\": \"admin\", \"user_id\": \"1\", \"key\": \"name\", \"value\": \"Mr.Banana\"}" -H "Content-Type: application/json"
+# test_run: curl http://localhost:3000/user/update -X PUT -d "{\"user_id\": \"1\", \"key\": \"name\", \"value\": \"Mr.Banana\"}" -H "Content-Type: application/json"
 @app.route('/user/update-user', methods=['PUT'])
 def make_update():
 	"""
 	This function will update user
 	"""
 	input = request.get_json()
-	return (jsonify(update_user.update_user(input["usertype"], input["user_id"], input["key"], input["value"])), 200)
+	return (jsonify(update_user.update_user(input["user_id"], input["key"], input["value"])), 200)
 	
-# test_run: curl http://localhost:3000/user/get-info -d "{\"usertype\": \"admin\", \"user_id\": \"1\", \"key\": \"name\"}"  -H "Content-Type: application/json"
+# test_run:  http://localhost:3000/user/get/user_id/1/key/first_name
 # or
-# curl http://localhost:3000/user/get-info -d "{\"usertype\": \"admin\", \"user_id\": \"1\", \"key\": \"all\"}" -H "Content-Type: application/json"
-@app.route('/user/get-info', methods=['POST'])
-def grab_user_info():
+#  http://localhost:3000/user/get/user_id/1/key/all
+@app.route('/user/get/id/<int:user_id>/key/<string:key>', methods=['GET'])
+def grab_user_info(user_id, key):
 	"""
 	This function will get information from a user
 	"""
 	input = request.get_json()
-	return (jsonify(get_user_info.get_user_info(input["usertype"], input["user_id"], input["key"])), 200)
+	return (jsonify(get_user_info.get_user_info(user_id, key)), 200)
 	
-# test_run: curl http://localhost:3000/user/remove -d "{\"usertype\": \"admin\", \"user_id\": \"1\"}" -H "Content-Type: application/json"
+# test_run: curl http://localhost:3000/user/remove -d "{\"user_id\": \"1\"}" -H "Content-Type: application/json"
 @app.route('/user/remove', methods=['DELETE'])
 def delete_user():
 	"""
 	This will remove a user
 	"""
 	input = request.get_json()
-	return (jsonify(remove_user.remove_user(input["usertype"], input["user_id"])), 200)
+	return (jsonify(remove_user.remove_user(input["user_id"])), 200)
 
+##########################################################################################################################################################
+# test_run: Make sure you remove next lines delimiters
+""" 
+curl http://localhost:3000/user/remove -d "{\"user_id\": \"1\", \"campaign_name\": \"Banana club\",
+\"style_id\": \"take-out\", \"tags\": \"club\", \"duration\": \"100\",
+\"img_urls\": \"HTTP\", \"img_names\": \"Banana club\", \"img_infos\": \"Banana club\"}" -H "Content-Type: application/json"
+"""
 
-################################################################################################################################################################################
-# test_run: curl http://localhost:3000/user/remove -d "{\"user_id\": \"1\", \"campaign_name\": \"Banana club\", \"tags\": \"club\", \"img_urls\": \"HTTP\", \"img_names\": \"Banana club\", \"img_infos\": \"Banana club\"}" -H "Content-Type: application/json"
 @app.route('/campaign/create-campaign', methods=['POST'])
 def make_campaign():
 	"""
 	This will remove a user
 	"""
 	input = request.get_json()
-	return (jsonify(create_campaign.create_campaign(input["user_id"], input["campaign_name"], input["tag_ids"], input["img_urls"], input["img_names"], input["img_infos"])), 200)
+	return (jsonify(create_campaign.create_campaign(input["user_id"], input["campaign_name"],
+		input["style_id"], input["tag_ids"], input["duration"], input["img_urls"], input["img_names"], input["img_infos"])), 200)
 
 if __name__ == "__main__":
 	app.run(host='localhost', port=3000)
