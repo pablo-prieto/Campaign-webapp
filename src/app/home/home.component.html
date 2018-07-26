@@ -1,29 +1,27 @@
 
-<div style="text-align:center">
-  <h1>
-    Welcome to your {{ title }}!
-  </h1>
-</div>
+<br>
 <div class="row" style="margin-left: 20px;">
   <div class="col-md-6">
     <h2>Edibles</h2>
     <mat-chip-list>
-      <mat-chip *ngFor="let criteria of edibles" selected [color]="criteriaColor">
+      <mat-chip (click)="filterCampaigns(criteria)" class="matChip" *ngFor="let criteria of edibles">
         {{criteria}}
       </mat-chip>
+      <mat-chip (click)="clearEdibles()">X - Clear</mat-chip>
     </mat-chip-list>
   </div>
   <div class="col-md-6">
     <h2>Borough</h2>
     <mat-chip-list>
-      <mat-chip *ngFor="let criteria of boroughs" selected [color]="criteriaColor">
+      <mat-chip (click)="filterCampaigns(criteria)" class="matChip" *ngFor="let criteria of boroughs" >
         {{criteria}}
       </mat-chip>
+      <mat-chip (click)="clearBoroughs()">X - Clear</mat-chip>
     </mat-chip-list>
   </div>
 </div>
 <br>
-<div class="row between-lg" style="margin-left: 20px">
+<div class="row" style="margin-left: 20px">
   <div *ngFor="let campaign of campaigns" class="col-sm-6 col-md-4 col-lg-3">
       <mat-card class="example-card">
         <mat-card-header>
@@ -31,7 +29,7 @@
           <mat-card-title>{{campaign.title}}</mat-card-title>
           <mat-card-subtitle>{{campaign.companyName}}</mat-card-subtitle>
         </mat-card-header>
-        <img (click)="openCampaign(campaign.id)" mat-card-image src={{campaign.img}} alt="Photo of a Shiba Inu">
+        <img (click)="openCampaign(campaign.id)" mat-card-image class="images" src={{campaign.img}} alt="Photo of a Shiba Inu">
         <mat-card-content>
           <p>{{campaign.content}}</p>
         </mat-card-content>

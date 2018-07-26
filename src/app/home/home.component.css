@@ -1,5 +1,6 @@
 .example-card {
   max-width: 300px;
+  /* min-height: 430px; */
   float:left;
   margin-right:30px;
   margin-bottom: 20px;
@@ -25,3 +26,11 @@ img {
 /* .homeMain {
   display: inline-block;
 } */
+
+.matChip {
+  background-color: #FED7B5;
+}
+
+.images {
+  height: 250px;
+}
