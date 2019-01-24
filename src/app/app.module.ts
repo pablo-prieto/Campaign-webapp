@@ -14,7 +14,7 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { AlertComponent } from './alert/alert.component';
 
-import { AlertService, AuthenticationService, UserService } from './services/index';
+import { AlertService, AuthenticationService, UserService, CampaignService } from './services/index';
 import { AuthGuard } from './guard/index';
 import { JwtInterceptor } from './helpers';
 
@@ -97,6 +97,7 @@ const appRoutes: Routes = [
     AlertService,
     AuthenticationService,
     UserService,
+    CampaignService,
     {
         provide: HTTP_INTERCEPTORS,
         useClass: JwtInterceptor,

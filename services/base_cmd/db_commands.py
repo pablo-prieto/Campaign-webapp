@@ -21,6 +21,7 @@ def connect(remote = True):
 	args: remote (boolean)
 	returns: con, cur (addresses)
 	"""
+	remote = True
 	if remote:
 		host = info.host
 		dbname = info.dbname
