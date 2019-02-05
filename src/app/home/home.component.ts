@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CampaignService } from '../services/campaign.service';
+import { OktaAuthService } from '@okta/okta-angular';
 
 @Component({
   selector: 'app-home',
@@ -39,22 +40,6 @@ export class HomeComponent implements OnInit {
     'This restaurant/business offers x, y and z to participants who register for our event and promote our product.'}
   ];
 
-  // Needs to be changed to receive data from an Observable and populate accordingly
-  // i.e
-  // import { CarService } from '../shared/car/car.service';
-
-  // export class CarListComponent implements OnInit {
-  //   cars: Array<any>;
-
-  //   constructor(private carService: CarService) { }
-
-  //   ngOnInit() {
-  //     this.carService.getAll().subscribe(data => {
-  //       this.cars = data;
-  //     });
-  //   }
-  // }
-
   campaigns = [
     {title: 'Campaign 1', id: 'campaign1', filters: ['burger'], companyName: 'ABC Company', img: '../assets/img/burger.jpg', content: 
       'This restaurant/business offers x, y and z to participants who register for our event and promote our product.'},
@@ -74,15 +59,21 @@ export class HomeComponent implements OnInit {
     'This restaurant/business offers x, y and z to participants who register for our event and promote our product.'}
   ];
 
-  constructor(
-    private router: Router, private route: ActivatedRoute, private campaignService: CampaignService
-  ) { }
+  isAuthenticated: boolean;
 
-  ngOnInit() {
+  constructor(
+    private router: Router, private route: ActivatedRoute, private campaignService: CampaignService, private oktaAuth: OktaAuthService
+  ) {}
+
+  async ngOnInit() {
     this.retrieveFilterCriteria();
     this.campaignService.getAll().subscribe(data => {
       console.log('localhost data: ', data);
     });
+    this.isAuthenticated = await this.oktaAuth.isAuthenticated();
+    if (!this.isAuthenticated) {
+      this.router.navigate(['login-page']);
+    }
   }
 
   toggleProfile() {

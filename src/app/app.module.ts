@@ -1,9 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { MatCardModule, MatMenuModule, MatButtonModule, MatIconModule, MatGridListModule, MatDividerModule, MatChipsModule} from '@angular/material';
+import { MatCardModule, MatMenuModule, MatButtonModule, MatIconModule, MatGridListModule, MatDividerModule, MatChipsModule, MatToolbarModule } from '@angular/material';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule }    from '@angular/forms';
+
+import { OktaCallbackComponent, OktaAuthModule } from '@okta/okta-angular';
+import { AuthInterceptor } from './shared/okta/auth.interceptor';
 
 import { AppComponent } from './app.component';
 import { ProfileComponent } from './profile/profile.component';
@@ -23,10 +26,15 @@ import { fakeBackendProvider } from './helpers';
 import { CampaignDetailsComponent } from './campaign-details/campaign-details.component';
 import { MainComponent } from './main/main.component';
 import { NotificationsComponent } from './notifications/notifications.component';
+import { LoginPageComponent } from './login-page/login-page.component';
+
+const config = {
+  issuer: 'https://dev-801865.oktapreview.com/oauth2/default',
+  redirectUri: 'http://localhost:4200/implicit/callback',
+  clientId: '0oaj4w3zwcvrYSBuH0h7'
+};
 
 const appRoutes: Routes = [
-  // { path: 'crisis-center', component: CrisisListComponent },
-  // { path: 'hero/:id',      component: HeroDetailComponent },
   {
     path: 'main',
     component: MainComponent,
@@ -36,30 +44,25 @@ const appRoutes: Routes = [
       {path: 'campaignDetails/:id', component: CampaignDetailsComponent}
     ]
   },
-  // {
-  //   path: 'home',
-  //   component: HomeComponent,
-  //   data: { title: 'Home' }
-  // },
+  {
+    path: 'implicit/callback',
+    component: OktaCallbackComponent
+  },
   {
     path: 'profile',
     component: ProfileComponent,
     data: { title: 'Profile' }
   },
-  // {
-  //   path: 'campaignDetails/:id',
-  //   component: CampaignDetailsComponent,
-  //   data: { title: 'Campaign Details' }
-  // },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  // { path: '',
-  //   redirectTo: '/home',
-  //   pathMatch: 'full'
-  // },
-  { path: '', component: MainComponent, canActivate: [AuthGuard] },
+  // { path: '', component: MainComponent, canActivate: [AuthGuard] },
+  {path: '', redirectTo: '/main', pathMatch: 'full'},
+  {
+    path: 'login-page',
+    component: LoginPageComponent
+  },
   // otherwise redirect to home
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: '/main' }
 ];
 
 @NgModule({
@@ -73,7 +76,8 @@ const appRoutes: Routes = [
     AlertComponent,
     CampaignDetailsComponent,
     MainComponent,
-    NotificationsComponent
+    NotificationsComponent,
+    LoginPageComponent
   ],
   imports: [
     BrowserModule,
@@ -87,13 +91,16 @@ const appRoutes: Routes = [
     MatGridListModule,
     MatDividerModule,
     MatChipsModule,
+    MatToolbarModule,
+    OktaAuthModule.initAuth(config),
     RouterModule.forRoot(
-      appRoutes,
-      { enableTracing: true } // <-- debugging purposes only
+      appRoutes
+      // { enableTracing: true } // <-- debugging purposes only
     )
   ],
   providers: [ 
-    AuthGuard,
+    // AuthGuard,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     AlertService,
     AuthenticationService,
     UserService,
