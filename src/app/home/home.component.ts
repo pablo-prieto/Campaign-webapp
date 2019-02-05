@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { Router, ActivatedRoute } from '@angular/router';
+import { CampaignService } from '../services/campaign.service';
+import { OktaAuthService } from '@okta/okta-angular';
 
 @Component({
   selector: 'app-home',
@@ -17,31 +19,61 @@ export class HomeComponent implements OnInit {
   filterCriteria = {};
   criteriaColor = '#FED7B5';
 
-  campaigns = [
-    {title: 'Campaign 1', id: 'campaign1', companyName: 'ABC Company', img: 'https://material.angular.io/assets/img/examples/shiba2.jpg', content: 
-      'The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. '
-      + 'A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally '
-      + 'bred for hunting.'},
-    {title: 'Campaign 2', id: 'campaign2', companyName: 'XYZ Company', img: 'https://material.angular.io/assets/img/examples/shiba2.jpg', content: 
-      'The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. '
-      + 'A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally '
-      + 'bred for hunting.'},
-    {title: 'Campaign 3', id: 'campaign3', companyName: 'CDE Company', img: 'https://material.angular.io/assets/img/examples/shiba2.jpg', content: 
-      'The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. '
-      + 'A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally '
-      + 'bred for hunting.'},
-    {title: 'Campaign 4', id: 'campaign4', companyName: 'NOP Company', img: 'https://material.angular.io/assets/img/examples/shiba2.jpg', content: 
-      'The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. '
-      + 'A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally '
-      + 'bred for hunting.'}
+  campaignsInFilter = [];
+
+  oldCampaigns = [
+    {title: 'Campaign 1', id: 'campaign1', filters: ['burger'], companyName: 'ABC Company', img: '../assets/img/burger.jpg', content: 
+      'This restaurant/business offers x, y and z to participants who register for our event and promote our product.'},
+    {title: 'Campaign 2', id: 'campaign2', filters: ['ice cream'], companyName: 'DEF Company', img: '../assets/img/ice_cream2.jpg', content: 
+      'This restaurant/business offers x, y and z to participants who register for our event and promote our product.'},
+    {title: 'Campaign 3', id: 'campaign3', filters: ['chicken waffles'], companyName: 'GHI Company', img: '../assets/img/chicken_waffles.jpg', content: 
+      'This restaurant/business offers x, y and z to participants who register for our event and promote our product.'},
+    {title: 'Campaign 4', id: 'campaign4', filters: ['french fries'], companyName: 'JKL Company', img: '../assets/img/french_fries.jpg', content: 
+      'This restaurant/business offers x, y and z to participants who register for our event and promote our product.'},
+    {title: 'Campaign 5', id: 'campaign4', filters: ['fried chicken'], companyName: 'JKL Company', img: '../assets/img/fried_chicken.jpg', content: 
+    'This restaurant/business offers x, y and z to participants who register for our event and promote our product.'},
+    {title: 'Campaign 6', id: 'campaign4', filters: ['ice cream'], companyName: 'JKL Company', img: '../assets/img/ice_cream.jpg', content: 
+    'This restaurant/business offers x, y and z to participants who register for our event and promote our product.'},
+    {title: 'Campaign 7', id: 'campaign4', filters: ['burger'], companyName: 'JKL Company', img: '../assets/img/burger2.jpg', content: 
+    'This restaurant/business offers x, y and z to participants who register for our event and promote our product.'},
+    {title: 'Campaign 8', id: 'campaign4', filters: ['pizza'], companyName: 'JKL Company', img: '../assets/img/pizza.png', content: 
+    'This restaurant/business offers x, y and z to participants who register for our event and promote our product.'}
   ];
 
-  constructor(
-    private router: Router, private route: ActivatedRoute,
-  ) { }
+  campaigns = [
+    {title: 'Campaign 1', id: 'campaign1', filters: ['burger'], companyName: 'ABC Company', img: '../assets/img/burger.jpg', content: 
+      'This restaurant/business offers x, y and z to participants who register for our event and promote our product.'},
+    {title: 'Campaign 2', id: 'campaign2', filters: ['ice cream'], companyName: 'DEF Company', img: '../assets/img/ice_cream2.jpg', content: 
+      'This restaurant/business offers x, y and z to participants who register for our event and promote our product.'},
+    {title: 'Campaign 3', id: 'campaign3', filters: ['chicken waffles'], companyName: 'GHI Company', img: '../assets/img/chicken_waffles.jpg', content: 
+      'This restaurant/business offers x, y and z to participants who register for our event and promote our product.'},
+    {title: 'Campaign 4', id: 'campaign4', filters: ['french fries'], companyName: 'JKL Company', img: '../assets/img/french_fries.jpg', content: 
+      'This restaurant/business offers x, y and z to participants who register for our event and promote our product.'},
+    {title: 'Campaign 5', id: 'campaign4', filters: ['fried chicken'], companyName: 'JKL Company', img: '../assets/img/fried_chicken.jpg', content: 
+    'This restaurant/business offers x, y and z to participants who register for our event and promote our product.'},
+    {title: 'Campaign 6', id: 'campaign4', filters: ['ice cream'], companyName: 'JKL Company', img: '../assets/img/ice_cream.jpg', content: 
+    'This restaurant/business offers x, y and z to participants who register for our event and promote our product.'},
+    {title: 'Campaign 7', id: 'campaign4', filters: ['burger'], companyName: 'JKL Company', img: '../assets/img/burger2.jpg', content: 
+    'This restaurant/business offers x, y and z to participants who register for our event and promote our product.'},
+    {title: 'Campaign 8', id: 'campaign4', filters: ['pizza'], companyName: 'JKL Company', img: '../assets/img/pizza.png', content: 
+    'This restaurant/business offers x, y and z to participants who register for our event and promote our product.'}
+  ];
 
-  ngOnInit() {
+  isAuthenticated: boolean;
+
+  constructor(
+    private router: Router, private route: ActivatedRoute, private campaignService: CampaignService, private oktaAuth: OktaAuthService
+  ) {}
+
+  async ngOnInit() {
     this.retrieveFilterCriteria();
+    this.campaignService.getAll().subscribe(data => {
+      console.log('localhost data: ', data);
+    });
+    this.isAuthenticated = await this.oktaAuth.isAuthenticated();
+    if (!this.isAuthenticated) {
+      this.router.navigate(['login-page']);
+    }
   }
 
   toggleProfile() {
@@ -56,7 +88,7 @@ export class HomeComponent implements OnInit {
   retrieveFilterCriteria() {
     //Call some backend service to retrive the criterias for the user.
     this.filterCriteria = {
-      'edibles' : [ 'Cheeseburgers', 'Pizza', 'Vegan', 'Medicine', 'Friend Chiken', 'Ice Cream', 'French Fries' ],
+      'edibles' : [ 'Burgers', 'Pizza', 'Vegan', 'Medicine', 'Fried Chicken', 'Ice Cream', 'French Fries' ],
       'boroughs' : {
         'Manhattan': [ 'Upper West Side', 'Upper East Side', 'Harlem', 'Washington Heights', 'Spanish Harlem'],
         'Queens' : [],
@@ -72,6 +104,36 @@ export class HomeComponent implements OnInit {
       console.log('borough: ', borough);
       this.boroughs.push(borough);
     }
+  }
+
+  filterCampaigns(criteria) {
+    // Filters are changing order even when they are the same, need to find a way to make sure it knows it's the same filter.
+    console.log('criteria: ', criteria);
+    let currentCampaigns = this.campaignsInFilter;
+    let filteredCampaigns = [];
+    for (let innerCampaign of this.oldCampaigns) {
+      if(this.filterItems(criteria, innerCampaign.filters).length > 0) {
+        filteredCampaigns.push(innerCampaign);
+      }
+    }
+    this.campaignsInFilter = filteredCampaigns;
+    console.log('filteredCampaigns: ', filteredCampaigns);
+    console.log('currentCampaigns: ', currentCampaigns);
+    this.campaigns = filteredCampaigns.concat(currentCampaigns);
+  }
+
+  filterItems(query, filters) {
+    return filters.filter((el) =>
+      el.toLowerCase().indexOf(query.toLowerCase()) > -1
+    );
+  }
+
+  clearEdibles() {
+    this.campaigns = this.oldCampaigns;
+    this.campaignsInFilter = [];
+  }
+
+  clearBoroughs() {
 
   }
 

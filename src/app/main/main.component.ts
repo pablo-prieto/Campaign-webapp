@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { OktaAuthService } from '@okta/okta-angular';
 
 @Component({
   selector: 'app-main',
@@ -10,11 +11,16 @@ export class MainComponent implements OnInit {
 
   tabOpen = false;
   openValue = '';
+  isAuthenticated: boolean;
 
-  constructor( private router: Router ) { }
+  constructor( private router: Router, private oktaAuth: OktaAuthService ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.router.navigate(['/main/home']);
+    this.isAuthenticated = await this.oktaAuth.isAuthenticated();
+    if (!this.isAuthenticated) {
+      this.router.navigate(['login-page']);
+    }
   }
 
   home() {
