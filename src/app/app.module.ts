@@ -28,6 +28,12 @@ import { MainComponent } from './main/main.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 
+// const config = {
+//   issuer: 'https://dev-801865.oktapreview.com/oauth2/default',
+//   redirectUri: 'http://feedyoursoul.press.s3-website-us-east-1.amazonaws.com/implicit/callback',
+//   clientId: '0oaj4w3zwcvrYSBuH0h7'
+// };
+
 const config = {
   issuer: 'https://dev-801865.oktapreview.com/oauth2/default',
   redirectUri: 'http://localhost:4200/implicit/callback',
